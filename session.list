@@ -2,12 +2,13 @@
 
 for x in `ls | grep -v init`; do
     cd $x
-    echo -n "$x - run: "
     sessions > /dev/null 2>&1
     if [ "x$?" != "x0" ]; then
-        echo "Fail"
+        echo -n "[31m$x[0m  "
     else
-        echo "Ok"
+        echo -n "[32m$x[0m  "
     fi
     cd ..
 done
+
+echo ""

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+for x in `ls | grep -v init`; do
+    cd $x
+    echo -n "$x - run: "
+    sessions > /dev/null 2>&1
+    if [ "x$?" != "x0" ]; then
+        echo "Fail"
+    else
+        echo "Ok"
+    fi
+    cd ..
+done

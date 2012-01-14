@@ -1,0 +1,4 @@
+#!/bin/bash
+
+pylint -r n -f parseable $@ 2>/dev/null | grep '^[^[:space:]].*'
+

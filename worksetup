@@ -1,0 +1,75 @@
+#!/bin/bash
+echo "Attempting to auto-configure the screens."
+echo ""
+
+WHEIGHT_LTP=`xrandr | grep LVDS1 | awk '{print $3}' | sed s/\+.*//g | tr "x" " "`
+WHEIGHT_VGA=`xrandr | grep VGA1  | awk '{print $3}' | sed s/\+.*//g | tr "x" " "`
+
+if [ "x$WHEIGHT_VGA" == "x(normal" ]; then
+    echo "Sorry, no VGA1. Running some stuff anyway."
+    echo "basically, I'm just setting auto / primary"
+    xrandr --output LVDS1 --auto --primary
+    echo "alright. I'm out."
+    exit 0
+fi
+
+LTP_HEIGHT=`echo $WHEIGHT_LTP | awk '{print $2}'`
+LTP_WIDTH=`echo  $WHEIGHT_LTP | awk '{print $1}'`
+
+VGA_HEIGHT=`echo $WHEIGHT_VGA | awk '{print $2}'`
+VGA_WIDTH=`echo  $WHEIGHT_VGA | awk '{print $1}'`
+
+#
+# Remember: Even though we xrandr "left" the monitor, the width / height
+# are still from where it's "normal"
+#
+
+echo "VGA: $VGA_HEIGHT by $VGA_WIDTH"
+echo "LTP: $LTP_HEIGHT by $LTP_WIDTH (but these will switch)"
+
+#   |----- LTPx-------||-VGAy-|
+#                   LTPx, 0
+#                      +------+       +
+#                      |      |       |
+#                      |      |       |
+#   0,VGAx-LTPy        |      |       |  VGAx
+#   +-----------------+|      | +     |
+#   |                 ||      | |     |
+#   |                 ||      | |LTPy |
+#   +-----------------++------+ +     +
+
+let LSX=${VGA_WIDTH}-${LTP_HEIGHT}
+echo $LSX
+
+LEFT_SCREEN_X=$LSX
+LEFT_SCREEN_Y=0
+
+RIGHT_SCREEN_X=$LTP_WIDTH # WIDTH=x
+RIGHT_SCREEN_Y=0
+
+echo "Assuming right screen is VGA1"
+echo ""
+echo "LS: $LEFT_SCREEN_X / $LEFT_SCREEN_Y"
+echo "RS: $RIGHT_SCREEN_X / $RIGHT_SCREEN_Y"
+echo ""
+
+echo "Setting the two screens to auto."
+echo ""
+
+xrandr --output VGA1 --auto
+xrandr --output LVDS1 --auto
+
+echo "Resetting VGA1 to a left rotation"
+echo ""
+
+xrandr --output VGA1 --rotate left
+
+# echo "Setting their positions"
+# echo ""
+#xrandr --output LVDS1 --pos ${RIGHT_TOP_X}x0
+#xrandr --output VGA1  --pos 0x${LEFT_TOP_Y}
+
+xrandr --output VGA1 --right-of LVDS1
+
+echo "Setting LVDS1 to primary"
+xrandr --output LVDS1 --primary

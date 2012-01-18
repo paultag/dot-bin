@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+
+import subprocess
+import json
+import sys
+
+output = subprocess.check_output(["/home/tag/.bin/pyerrs", sys.argv[1]])
+output = output.split("\n")
+
+def chompize( line, tok ):
+    try:
+        tmp = line.index(tok)
+    except ValueError as e:
+        print "Can't find %s in %s" % ( tok, line )
+        raise
+    token = line[:tmp]
+    line = line[tmp+len(tok):].strip()
+    return ( token, line )
+
+errors = {}
+
+for line in output:
+    if line.strip() == "":
+        continue
+
+    fd, line = chompize( line, ":" )
+    ln, line = chompize( line, ":" )
+    lz, line = chompize( line, "]" )
+    lz = lz[1:].split(",")
+    er = line
+
+    payload = {
+        "file" : fd,
+        "line" : ln,
+        "warnings" : lz,
+        "string"   : er
+    }
+
+    try:
+        errors[fd][line] = payload
+    except KeyError:
+        errors[fd] = {
+            line : payload
+        }
+print json.dumps(errors)

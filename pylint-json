@@ -37,9 +37,9 @@ for line in output:
     }
 
     try:
-        errors[fd][line] = payload
+        errors[fd][ln] = payload
     except KeyError:
         errors[fd] = {
-            line : payload
+            ln : payload
         }
 print json.dumps(errors)

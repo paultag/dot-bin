@@ -3,4 +3,6 @@
 irc-uplink &
 PID=$!
 ssh irc@anized.org
+
+pkill -P $PID
 kill $PID

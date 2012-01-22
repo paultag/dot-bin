@@ -4,4 +4,4 @@ if [ "x$1" == "x-" ]; then
     jp | less
 fi
 
-cat $1 | jp | less
+cat "$1" | jp | less

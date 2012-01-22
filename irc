@@ -1,0 +1,6 @@
+#!/bin/bash
+
+irc-uplink &
+PID=$!
+ssh irc@anized.org
+kill $PID

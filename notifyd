@@ -1,5 +1,5 @@
 #!/bin/bash
 
 while read foo; do
-    notify-send "IRC Notification" "$foo"
+    notify-send -i empathy "IRC Notification" "$foo"
 done

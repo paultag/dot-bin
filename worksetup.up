@@ -1,0 +1,7 @@
+#!/bin/bash
+
+xrandr --output VGA1  --auto
+xrandr --output LVDS1 --auto
+xrandr --output VGA1  --rotate left
+
+eval "`monconf`"

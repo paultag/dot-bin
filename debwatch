@@ -13,7 +13,7 @@ def loop():
 		f = urllib.urlopen("%s?since=%s" % (service, str(lastts)))
 		msgs = json.loads(f.read())
 		for x in msgs['messages']:
-			print x['text']
+			print x['text'] + "\n"
 			if lastts < x['timestamp']:
 				lastts = x['timestamp']
 

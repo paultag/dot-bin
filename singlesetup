@@ -1,4 +1,6 @@
 #!/bin/bash
 
-xrandr --output VGA1  --off
+VGA="HDMI3"
+
+xrandr --output $VGA  --off
 xrandr --output LVDS1 --auto --primary

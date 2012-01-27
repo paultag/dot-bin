@@ -1,7 +1,9 @@
 #!/bin/bash
 
-xrandr --output VGA1  --auto
+VGA="HDMI3"
+
+xrandr --output $VGA  --auto
 xrandr --output LVDS1 --auto
-xrandr --output VGA1  --rotate left
+xrandr --output $VGA  --rotate left
 
 eval "`monconf`"

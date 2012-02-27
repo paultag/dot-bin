@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ "x$1" == "x" ]; then
+    echo "Need a changes file."
+    exit 1
+fi
+
+parse-changelog $1 | get-bugs-from-changelog
+lintian -IE --pedantic $@

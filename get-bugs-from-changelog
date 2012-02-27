@@ -2,7 +2,16 @@
 
 import sys
 import json
+import SOAPpy
+
+url = 'http://bugs.debian.org/cgi-bin/soap.cgi'
+namespace = 'Debbugs/SOAP'
+server = SOAPpy.SOAPProxy(url, namespace)
+
 
 changes = json.load(sys.stdin)
 
+bugs = changes['Closes'].split()
 
+for bug in server.get_status(bugs)['item']:
+    print bug['value']['source']

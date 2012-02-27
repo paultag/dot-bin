@@ -1,0 +1,12 @@
+#!/usr/bin/python
+
+import SOAPpy
+import sys
+
+url = 'http://bugs.debian.org/cgi-bin/soap.cgi'
+namespace = 'Debbugs/SOAP'
+server = SOAPpy.SOAPProxy(url, namespace)
+
+if __name__ == "__main__":
+    for resp in server.get_status(sys.argv[1]):
+        print resp['value']['source']

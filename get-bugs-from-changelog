@@ -11,7 +11,26 @@ server = SOAPpy.SOAPProxy(url, namespace)
 
 changes = json.load(sys.stdin)
 
-bugs = changes['Closes'].split()
+if not "Source" in changes:
+    print "E: NO SOURCE NAME FOUND, BAD CHANGES"
+    sys.exit(1)
 
-for bug in server.get_status(bugs)['item']:
-    print bug['value']['source']
+src = changes['Source']
+
+if "Closes" not in changes:
+    print "I: %s source: This upload closes no bugs." % ( src )
+    sys.exit(0)
+
+bugs = changes['Closes'].split()
+metainf = server.get_status(bugs)['item']
+
+if len(bugs) <= 1:
+    metainf = [ metainf ]
+
+for bug in metainf:
+    c_pkg = bug['value']['source']
+    bno   = bug['value']['bug_num']
+    if c_pkg != src:
+        print "E: %s source: Bug #%s belongs to pkg %s, not %s" % (
+            src, bno, c_pkg, src
+        )

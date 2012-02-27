@@ -1,0 +1,19 @@
+#!/usr/bin/env python
+
+import sys
+import json
+
+payload = {}
+
+with open(sys.argv[1], 'r') as f:
+    lkh = None
+    lines = f.readlines()
+    for line in lines:
+        if line[0] == " ":
+            payload[lkh] += line.strip() + "\n"
+        else:
+            idex = line.index(":")
+            lkh  = line[:idex].strip()
+            line = line[idex + 1:].strip()
+            payload[lkh] = line
+print json.dumps(payload, sort_keys=True, indent=4)

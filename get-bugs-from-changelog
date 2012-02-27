@@ -29,8 +29,16 @@ if len(bugs) <= 1:
 
 for bug in metainf:
     c_pkg = bug['value']['source']
+    if not c_pkg: #metapkg?
+        c_pkg = bug['value']['package']
+
     bno   = bug['value']['bug_num']
+
     if c_pkg != src:
         print "E: %s source: Bug #%s belongs to pkg %s, not %s" % (
             src, bno, c_pkg, src
+        )
+    else:
+        print "I: %s source: Closes Bug #%s" % (
+            src, bno
         )

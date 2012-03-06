@@ -9,9 +9,6 @@ fi
 
 dist=$1
 
-echo "Mounting $dist for action. Press enter if this is OK."
-read trash
-
 real_root="/var/sbuild"
 tmp_root="/tmp/sbuild"
 union_root="/srv/sbuild"
@@ -41,6 +38,9 @@ if [ "x`find $tmp_root/$dist 2>&1`" != "x$tmp_root/$dist" ]; then
     echo " Expecting an empty folder at $tmp_root/$dist"
     exit 6
 fi
+
+echo "Mounting $dist for action. Press enter if this is OK."
+read trash
 
 sudo unionfs-fuse -o cow,max_files=32768 \
     -o allow_other,use_ino,suid,dev,nonempty \

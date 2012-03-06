@@ -1,0 +1,48 @@
+#!/bin/bash
+# Copyright (c) Paul Tagliamonte <paultag@ubuntu.com> under the terms and
+# and conditions of sbuild it's self.
+
+if [ "x$1" == "x" ]; then
+    echo "Enter a dist (that's already present) to mount"
+    exit 1
+fi
+
+dist=$1
+
+echo "Mounting $dist for action. Press enter if this is OK."
+read trash
+
+real_root="/var/sbuild"
+tmp_root="/tmp/sbuild"
+union_root="/srv/sbuild"
+
+if [ ! -d $real_root/$dist ]; then
+    echo "It appears you don't have the sbuild chroot created"
+    echo " Expecting chroot at $real_root/$dist."
+    exit 2
+fi
+if [ ! -d $tmp_root/$dist ]; then
+    echo "It appears you don't have a diversion dump."
+    echo " Expecting empty folder at $tmp_root/$dist."
+    exit 3
+fi
+if [ ! -d $union_root/$dist ]; then
+    echo "It appears you don't have a union mount point."
+    echo " Expecting empty folder at $union_root/$dist."
+    exit 4
+fi
+if [ "x`find $union_root/$dist 2>&1`" != "x$union_root/$dist" ]; then
+    echo "It looks like your union mount point has something in it."
+    echo " Expecting an empty folder at $union_root/$dist"
+    exit 5
+fi
+if [ "x`find $tmp_root/$dist 2>&1`" != "x$tmp_root/$dist" ]; then
+    echo "It looks like your tmp mount point has something in it."
+    echo " Expecting an empty folder at $tmp_root/$dist"
+    exit 6
+fi
+
+sudo unionfs-fuse -o cow,max_files=32768 \
+    -o allow_other,use_ino,suid,dev,nonempty \
+    $tmp_root/$dist=RW:$real_root/$dist=RO   \
+    $union_root/$dist

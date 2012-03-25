@@ -1,0 +1,130 @@
+#!/usr/bin/env python
+
+import re
+import pbs
+import SOAPpy
+import os.path
+
+from pbs import apt_get
+
+url = 'http://bugs.debian.org/cgi-bin/soap.cgi'
+namespace = 'Debbugs/SOAP'
+server = SOAPpy.SOAPProxy(url, namespace)
+
+package_name = "sponsorship-requests"
+
+def detag(subject, tags=None):
+    if not tags:
+        tags = []
+    try:
+        subject = subject.replace("(", "[")
+        subject = subject.replace(")", "]")
+        sb = subject.index("[")
+        eb = subject.index("]")
+        tag = subject[sb+1:eb]
+        nsub = subject[:sb] + subject[eb+1:]
+        tags.append(tag)
+        return detag(nsub, tags)
+    except ValueError:
+        subject = re.sub(r'\s+', ' ', subject)
+        return ( subject, tags )
+
+def yank_description(subject):
+    subject = subject.replace(" - ", " -- ", 1)
+    subject = subject.split(" -- ", 1)
+    if len(subject) > 1:
+        return ( subject[0], subject[1] )
+    return ( "", subject[0] )
+
+def deprefix_subject(subject, pfxs=None):
+    if not pfxs:
+        pfxs = []
+    try:
+        ep = subject.index(":")
+        if ep > 5:
+            raise ValueError("Frack")
+        pfxs.append( subject[:ep] )
+        subject = subject[ep+1:].strip()
+        return deprefix_subject(subject, pfxs)
+    except ValueError:
+        return subject, pfxs
+
+def break_pkgname(name):
+    try:
+        nid = name.index("/")
+        pkg  = name[:nid]
+        vers = name[nid+1:]
+        return ( pkg, vers )
+    except ValueError:
+        return ( name, "" )
+
+def process_subject(subject):
+    subject, tags  = detag(subject)
+    subject, pfxs  = deprefix_subject(subject)
+    package, descr = yank_description(subject)
+    pkg,     vers  = break_pkgname(package)
+    return {
+        "package" : pkg,
+        "version" : vers,
+        "descr"   : descr,
+        "tags"    : ( pfxs + tags )
+    }
+
+def get_info_on_bugs(bugs):
+    """ Get all the active bugs we care about """
+    return server.get_status(bugs)
+
+def get_all_bugs():
+    """ Get all the active bugs we care about """
+    return get_info_on_bugs(server.get_bugs("package", package_name))
+
+def clean_email(email):
+    """ Clean an email so we just have the address """
+    try:
+        idex1 = email.index("<")
+        idex2 = email.index(">")
+        return email[idex1+1:idex2].strip()
+    except ValueError:
+        return email
+
+def verify_new(inf):
+    pkg = inf['package']
+    try:
+        apt_get('--dry-run', 'source', pkg)
+        return False
+    except pbs.ErrorReturnCode_100:
+        return True
+
+bugs = get_all_bugs()
+for bug in bugs['item']:
+    # {'tags': ['RFS', 'ITP'], 'version': '0.53-1',
+    # 'descr': 'Master High Availability Manager and Tools for MySQL',
+    # 'package': 'mha4mysql-node'}
+    metainf = bug['value']
+    inf = process_subject( metainf['subject'] )
+    if "NEW" in inf['tags'] or "ITP" in inf['tags']:
+        if not verify_new(inf) and metainf['done'] == '':
+            print "%s : Package %s is *NOT* new, but RFS shows NEW." % (
+                metainf['id'],
+                inf['package']
+            )
+    else:
+        if inf['package'] == '':
+            continue
+
+        if verify_new(inf):
+            severity = metainf['severity']
+            if severity != 'wishlist':
+                print "severity %s wishlist" % ( metainf['id'] )
+                print "# bug #%s is a new package. changing severity." % (
+                    metainf['id']
+                )
+
+            #print "# %s : Package %s *IS* new, but RFS doens't show this." % (
+            #    metainf['id'],
+            #    inf['package']
+            #)
+            print "retitle %s %s" % (
+                metainf['id'],
+                metainf['subject'] + " [ITP]"
+            )

@@ -1,0 +1,14 @@
+#!/bin/bash
+# Copyright (c) Paul Tagliamonte <paultag@ubuntu.com> under the terms and
+# and conditions of sbuild it's self.
+
+if [ "x$1" == "x" ]; then
+    echo "Enter a dist (that's already present) to unmount"
+    exit 1
+fi
+
+dist=$1
+tmp_root="/tmp/sbuild"
+
+sudo rm -rf $tmp_root/$dist/* \
+            $tmp_root/$dist/.unionfs

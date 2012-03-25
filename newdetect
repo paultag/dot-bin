@@ -104,10 +104,11 @@ for bug in bugs['item']:
     inf = process_subject( metainf['subject'] )
     if "NEW" in inf['tags'] or "ITP" in inf['tags']:
         if not verify_new(inf) and metainf['done'] == '':
-            print "%s : Package %s is *NOT* new, but RFS shows NEW." % (
-                metainf['id'],
-                inf['package']
-            )
+            #print "%s : Package %s is *NOT* new, but RFS shows NEW." % (
+            #    metainf['id'],
+            #    inf['package']
+            #)
+            pass
     else:
         if inf['package'] == '':
             continue

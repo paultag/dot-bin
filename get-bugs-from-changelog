@@ -39,6 +39,6 @@ for bug in metainf:
             src, bno, c_pkg, src
         )
     else:
-        print "I: %s source: Closes Bug #%s" % (
-            src, bno
+        print "I: %s source: Closes Bug #%s (which belongs to %s)" % (
+            src, bno, src
         )

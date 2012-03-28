@@ -112,6 +112,8 @@ for bug in bugs['item']:
     else:
         if inf['package'] == '':
             continue
+        if metainf['done'] != '':
+            continue
 
         if verify_new(inf):
             severity = metainf['severity']

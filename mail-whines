@@ -1,0 +1,22 @@
+#!/bin/bash
+
+CONTROL=/tmp/$$.tmp
+
+echo "Reading RFSs"
+
+newdetect > $CONTROL
+ret=$?
+
+if [ $ret -eq 0 ]; then
+    if [ "x`cat $CONTROL`" == "x" ]; then
+        echo "Aborting, no changes to make"
+    else
+        echo "Sending the following mail"
+        echo ""
+        cat $CONTROL
+        echo ""
+        echo -n ">"
+        read FOO
+        mailx -s "Changing some debian-mentors bugs." tag@pault.ag < $CONTROL
+    fi
+fi

@@ -1,0 +1,9 @@
+#!/usr/bin/env python
+
+from pbs import redshift
+import json
+
+location = json.load(open("/home/tag/.location.json", 'r'))
+param = "%s:%s" % ( location['latitude'], location['longitude'] )
+print param
+redshift( l=param )

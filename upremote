@@ -1,0 +1,12 @@
+#!/bin/bash
+
+INFO=`ssh metatron.pault.ag "cat ~/location.json"`
+RET=$?
+
+if [ $? -ne 0 ]; then
+    exit 0
+fi
+
+# OK. Let's update.
+
+echo $INFO > /home/tag/.location.json

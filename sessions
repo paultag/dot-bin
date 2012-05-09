@@ -1,6 +1,0 @@
-#!/usr/bin/env python
-
-import imp
-
-foo = imp.load_source('__init__', './__init__.py')
-print foo.session_list()

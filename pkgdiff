@@ -31,7 +31,7 @@ echo "I: Checking out a copy. Hang on."
 apt-get source $source >/dev/null 2>&1
 echo "I: Got the source. Diffing now."
 
-diffname=${source}-${version}.nmu.diff
+diffname=${source}-${version}.pkg.diff
 
 debdiff *dsc $path 2>/dev/null > "${diffname}"
 

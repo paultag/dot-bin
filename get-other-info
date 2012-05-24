@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+
+import sys
+import json
+
+c = json.load(sys.stdin)
+
+def warning(thing):
+    print "W: PT: " + thing
+
+def error(thing):
+    print "E: PT: " + thing
+
+def info(thing):
+    print "I: PT: " + thing
+
+blacklist = [
+    "unreleased",
+    "stable",
+    "testing",
+    "stable-proposed-updates"
+]
+
+source = c['Source']
+suite = c['Distribution']
+cb = c['Changed-By']
+maint = c['Maintainer']
+
+# warning("Beware of stuff that starts with PT:. It can be wrong.")
+
+if suite.lower() in blacklist:
+    error("Warning! Suite %s is in the blacklist! Double-check it's right."
+          % suite)
+else:
+    info("Upload targets %s" % suite)
+
+if cb != maint:
+    warning(
+        "Changed by someone other then the maintainer. Verify they've got rights.")
+else:
+    info("Changed by and maintained by %s" % maint)

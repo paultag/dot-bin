@@ -5,5 +5,11 @@ if [ "x$1" == "x" ]; then
     exit 1
 fi
 
-parse-changelog $1 | get-bugs-from-changelog
-lintian -IE --pedantic $@
+parse-changelog $1 | get-other-info | debwrapper
+parse-changelog $1 | get-bugs-from-changelog | debwrapper
+parse-changelog $1 | is-python | debwrapper
+if [ $? -eq 0 ]; then
+    lintian4py -IE --pedantic $@ | debwrapper
+fi
+
+lintian -IE --pedantic $@ | debwrapper

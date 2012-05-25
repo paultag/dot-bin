@@ -27,7 +27,7 @@ control = json.load(sys.stdin)
 descrip = control['Description']
 short = descrip.split('\n')[0]
 src = control['Package']
-print "I: PT: Does this sound right? \"%s is a %s\"" % (
+print "I: PT: Does this sound right? \"%s is/are a(n) %s\"" % (
     src,
     short
 )

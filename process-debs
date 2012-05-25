@@ -10,4 +10,6 @@ files.remove("")
 for fil in files:
     inf = fil.split()
     deb = inf[4]
-    os.system("~/.bin/lint-deb %s" % deb)
+    ext = ".deb"
+    if deb[-len(ext):] == ext:
+        os.system("~/.bin/lint-deb %s" % deb)

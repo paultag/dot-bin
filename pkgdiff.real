@@ -1,0 +1,51 @@
+#!/bin/bash
+
+dir=/tmp/pkgdiff.$$.d
+cwd=`pwd`
+
+if [ ! -e ./debian/changelog ]; then
+    echo "E: Can't find debian/changelog."
+    exit 1
+fi
+
+source=`cat debian/control | grep ^Source | sed s/Source:\ //g`
+version=`dpkg-parsechangelog | grep ^Version | sed s/Version:\ //g`
+dsc=${source}_${version}.dsc
+
+echo "I: Running a diff against the archive's copy of $source"
+path="${cwd}/../${dsc}"
+
+if [ ! -e ${path} ]; then
+    echo "E:"
+    echo "E: OK. We don't have a DSC. Press enter to reubild."
+    echo "E:"
+    read throwaway
+    dpkg-buildpackage -S -us -uc
+fi
+
+mkdir $dir
+cd $dir
+#
+
+echo "I: Checking out a copy. Hang on."
+apt-get source $source >/dev/null 2>&1
+echo "I: Got the source. Diffing now."
+
+diffname=${source}-${version}.pkg.diff
+
+debdiff *dsc $path 2>/dev/null > "${diffname}"
+
+if [ "x`cat ${diffname}`" == "x" ]; then
+    echo "W: Delta doesn't exist. Fail!"
+    cd $cwd
+    rm -rf $dir
+    exit 1
+fi
+
+mv ${diffname} ${cwd}
+
+#
+cd $cwd
+rm -rf $dir
+
+echo "I: Saved diff as ${diffname}"

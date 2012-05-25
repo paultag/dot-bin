@@ -7,6 +7,8 @@ fi
 
 parse-changelog $1 | get-other-info | debwrapper
 parse-changelog $1 | get-bugs-from-changelog | debwrapper
+parse-changelog $1 | process-debs | debwrapper
+
 parse-changelog $1 | is-python | debwrapper
 if [ $? -eq 0 ]; then
     lintian4py -IE --pedantic $@ | debwrapper

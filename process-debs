@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+
+import json
+import sys
+import os
+
+changes = json.load(sys.stdin)
+files = changes['Files'].split("\n")
+files.remove("")
+for fil in files:
+    inf = fil.split()
+    deb = inf[4]
+    os.system("~/.bin/lint-deb %s" % deb)

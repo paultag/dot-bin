@@ -1,0 +1,6 @@
+#!/bin/bash
+
+change=$(dpkg-deb -I $1 control | parse-changelog)
+echo "$change" | check-description
+#echo "$change" | check-homepage
+#echo "$change" | check-vcs

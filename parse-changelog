@@ -14,7 +14,7 @@ lkh = None
 lines = f.readlines()
 for line in lines:
     if line[0] == " ":
-        payload[lkh] += line.strip() + "\n"
+        payload[lkh] += "\n" + line.strip()
     else:
         idex = line.index(":")
         lkh  = line[:idex].strip()

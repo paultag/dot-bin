@@ -46,6 +46,7 @@ else
         ln -s $SBUILD/$DIST.d/$DIST-$VARIANT $SBUILD/$DIST
     else
         echo "E: No such dist! Looking in $SBUILD/$DIST.d/$DIST-$VARIANT."
+        rm $SBUILD/$DIST.lock
         exit 1
     fi
 fi

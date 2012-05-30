@@ -15,10 +15,16 @@ if [ -e $SBUILD/$DIST.lock ]; then
     PID=`cat $SBUILD/$DIST.lock`
     echo "W: We *must* wait for the finish of PID $PID"
     echo "W: Blocking execution until this file is removed."
-    RET=1
+    if [ -e $SBUILD/$DIST.wait ]; then
+        echo "E: Someone else is waiting. Bombing out."
+        exit 2
+    fi
+    echo $$ > $SBUILD/$DIST.wait
     while [ -e $SBUILD/$DIST.lock ]; do
         sleep 1
     done
+    echo "I: Dropping out of lock. Purging wait."
+    rm $SBUILD/$DIST.wait
 fi
 
 echo "I: Aquiring lock"

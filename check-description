@@ -32,4 +32,5 @@ print "I: PT: Does this sound right? \"%s is/are a(n) %s\"" % (
     short
 )
 
-check_url(control['Homepage'], 'homepage')
+#check_url(control['Homepage'], 'homepage')  #XXX: Move this to a different
+# stage.

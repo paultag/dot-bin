@@ -52,3 +52,6 @@ echo "I: "
 # sbuild-update -d $DIST --upgrade
 
 sbuild -d $DIST
+
+echo "I: Releasing lock"
+rm $SBUILD/$DIST.lock

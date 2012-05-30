@@ -1,0 +1,18 @@
+#!/bin/bash
+# Copyright (c) Paul Tagliamonte <paultag@ubuntu.com>, 2012, under the terms
+# and conditions of the Expat license.
+
+echo "I: Post-run hook running."
+
+SBUILD=/var/sbuild
+VARIANT=$1
+DIST=$2
+
+sb-endsessions $VARIANT $DIST
+
+if [ "x$SBUILD_DO_OVERLAY" != "x" ]; then
+    echo "I: Puring union overlay."
+    sudo umount $SBUILD/$DIST
+    sudo rm -rf $SBUILD/$DIST
+    ln -s $SBUILD/$DIST.d/$DIST-default $SBUILD/$DIST
+fi

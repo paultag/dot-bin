@@ -1,0 +1,15 @@
+#!/bin/bash
+# Copyright (c) Paul Tagliamonte <paultag@ubuntu.com>, 2012, under the terms
+# and conditions of the Expat license.
+
+echo "I: Ending sessions that are in $DIST"
+
+SBUILD=/var/sbuild
+VARIANT=$1
+DIST=$2
+
+SESSIONS=`schroot --all-sessions -l | grep "^session:$DIST-"`
+for session in $SESSIONS; do
+    echo "W: Ending session $session"
+    schroot -e -c $session
+done

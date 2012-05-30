@@ -1,0 +1,6 @@
+#!/bin/bash
+# Copyright (c) Paul Tagliamonte <paultag@ubuntu.com>, 2012, under the terms
+# and conditions of the Expat license.
+
+export SBUILD_DO_OVERLAY="YES"
+sb $@

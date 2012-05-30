@@ -1,0 +1,38 @@
+#!/bin/bash
+# Copyright (c) Paul Tagliamonte <paultag@ubuntu.com>, 2012, under the terms
+# and conditions of the Expat license.
+
+echo "I: Pre-hook running."
+
+SBUILD=/var/sbuild
+VARIANT=$1
+DIST=$2
+
+sb-endsessions $VARIANT $DIST
+
+if [ ! -h $SBUILD/$DIST ]; then
+    if [ -d $SBUILD/$DIST ]; then
+        # If it's a directory, it's likely because of what's going on
+        # below.
+        sudo umount $SBUILD/$DIST 2>/dev/null
+        sudo rm -rf $SBUILD/$DIST
+    else
+        # If for some reason, there's something there.
+        rm -f $SBUILD/$DIST
+    fi
+    # Get into a consistant state.
+    ln -s $SBUILD/$DIST.d/$DIST-default $SBUILD/$DIST
+fi
+
+if [ "x$SBUILD_DO_OVERLAY" != "x" ]; then
+    echo "I: Shimming the old chroot out of the way. This will get gnarly."
+    echo "I: You might need to auth..."
+    rm -f $SBUILD/$DIST
+    mkdir $SBUILD/$DIST
+    echo "Mounting."
+    sudo unionfs-fuse \
+        -o cow,max_files=32768 \
+        -o allow_other,use_ino,suid,dev,nonempty \
+        "$SBUILD/$DIST.overlay.d/$DIST-$VARIANT=RW:$SBUILD/$DIST.d/$DIST-$VARIANT=RO" \
+        $SBUILD/$DIST
+fi

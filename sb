@@ -50,14 +50,23 @@ else
     fi
 fi
 
+UP_TO_DATE=$SBUILD/$DIST.updates.d/$DIST-$VARIANT
+ARGS="--no-apt-update --no-apt-upgrade"
+
+if test `find "$UP_TO_DATE" -mmin +120`; then
+    touch $UP_TO_DATE
+    ARGS="--apt-update --apt-upgrade"
+fi
+
 echo "I: "
 echo "I: Dist:    $DIST"
 echo "I: Variant: $VARIANT"
+echo "I: Args:    $ARGS"
 echo "I: "
 # echo "I: Before we go farther, we're updating."
 # sbuild-update -d $DIST --upgrade
 
-sbuild -d $DIST
+sbuild -d $DIST $ARGS
 
 echo "I: Releasing lock"
 rm $SBUILD/$DIST.lock

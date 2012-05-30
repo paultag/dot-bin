@@ -6,9 +6,13 @@ DIST="sid"
 VARIANT="default"
 SBUILD=/var/sbuild
 
-if [ ! -e debian/changelog ]; then
-    echo "E: No debian/changelog. Run from inside your source tree."
-    exit 3
+if [ "x$SBUILD_COMMAND" == "x" ]; then
+    if [ ! -e debian/changelog ]; then
+        echo "E: No debian/changelog. Run from inside your source tree."
+        exit 3
+    fi
+else
+    echo "I: Not checking if we're in the source tree."
 fi
 
 if [ "x$1" != "x" ]; then

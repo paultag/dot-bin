@@ -11,6 +11,19 @@ if [ "x$2" != "x" ]; then
     DIST=$2
 fi
 
+if [ -e $SBUILD/$DIST.lock ]; then
+    PID=`cat $SBUILD/$DIST.lock`
+    echo "W: We *must* wait for the finish of PID $PID"
+    echo "W: Blocking execution until this file is removed."
+    RET=1
+    while [ -e $SBUILD/$DIST.lock ]; do
+        sleep 1
+    done
+fi
+
+echo "I: Aquiring lock"
+echo $$ > $SBUILD/$DIST.lock
+
 CURRENT=$(basename `ls -xl $SBUILD/$DIST | awk '{print $11}'`)
 
 # We set up the name like:

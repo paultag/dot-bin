@@ -6,6 +6,11 @@ DIST="sid"
 VARIANT="default"
 SBUILD=/var/sbuild
 
+if [ ! -e debian/changelog ]; then
+    echo "E: No debian/changelog. Run from inside your source tree."
+    exit 3
+fi
+
 if [ "x$1" != "x" ]; then
     VARIANT=$1
 fi

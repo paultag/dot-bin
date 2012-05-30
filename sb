@@ -1,0 +1,41 @@
+#!/bin/bash
+
+DIST="sid"
+VARIANT="default"
+SBUILD=/var/sbuild
+
+if [ "x$1" != "x" ]; then
+    VARIANT=$1
+fi
+if [ "x$2" != "x" ]; then
+    DIST=$2
+fi
+
+CURRENT=$(basename `ls -xl $SBUILD/$DIST | awk '{print $11}'`)
+
+# We set up the name like:
+#   dist-variant
+# such as "sid-clang" is cool.
+#echo "I: We're currently $CURRENT."
+
+if [ "x$CURRENT" == "x$DIST-$VARIANT" ]; then
+    echo "I: This matches the desired setup. No action."
+else
+    if [ -e $SBUILD/$DIST.d/$DIST-$VARIANT ]; then
+        echo "I: Re-setting $DIST symlink."
+        rm $SBUILD/$DIST
+        ln -s $SBUILD/$DIST.d/$DIST-$VARIANT $SBUILD/$DIST
+    else
+        echo "E: No such dist! Looking in $SBUILD/$DIST.d/$DIST-$VARIANT."
+        exit 1
+    fi
+fi
+
+echo "I: "
+echo "I: Dist:    $DIST"
+echo "I: Variant: $VARIANT"
+echo "I: "
+# echo "I: Before we go farther, we're updating."
+# sbuild-update -d $DIST --upgrade
+
+sbuild -d $DIST

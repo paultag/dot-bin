@@ -8,7 +8,7 @@ DIST="sid"
 VARIANT="default"
 SBUILD=/var/sbuild
 #MIRROR="http://ftp.us.debian.org/debian"
-MIRROR="http://debian.lcs.mit.edu/debian"
+MIRROR="http://mirrors.mit.edu/debian/"
 
 export `dpkg-architecture`
 

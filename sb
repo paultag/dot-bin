@@ -77,7 +77,7 @@ echo "I: "
 
 if [ "x$SBUILD_COMMAND" == "x" ]; then
     sb-prehook $VARIANT $DIST
-    sbuild -A -d $DIST -j $CPUCOUNT
+    sbuild --source -A -d $DIST -j $CPUCOUNT
     sb-posthook $VARIANT $DIST
 else
     $SBUILD_COMMAND $DIST

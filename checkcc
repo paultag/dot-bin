@@ -1,0 +1,11 @@
+#!/usr/bin/make -f
+
+include debian/rules
+
+tellme-cc:
+	@echo $(CC)
+
+tellme-cxx:
+	@echo $(CXX)
+
+.PHONY: tellme-cc tellme-cxx

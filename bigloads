@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+
+from loadavg import get_loadavg
+
+load = get_loadavg()
+
+def _handle_load(load):
+    return int(float(load) * 100)
+
+print "%s %s %s" % (
+    _handle_load(load['1min']),
+    _handle_load(load['5min']),
+    _handle_load(load['15min'])
+)

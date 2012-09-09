@@ -6,6 +6,6 @@ RET=$?
 if [ $RET -eq 0 ]; then
 	git branch | grep \* | sed s/^*\ //
 else
-	date "+%I:%M %p"
-    # w | head -n1 | sed s/.*:\ //g | tr -d "," | spark
+	# date "+%I:%M %p"
+    bigloads | spark
 fi

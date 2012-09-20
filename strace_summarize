@@ -1,0 +1,80 @@
+#!/usr/bin/python
+#----------------------------------------------------------------------
+# Description : Simplify strace output to allow for easier diffing.
+# Author      : James Hunt  <james.hunt@ubuntu.com>
+# Date        : 24 July 2012
+#----------------------------------------------------------------------
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2, as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#----------------------------------------------------------------------
+
+import os
+import re
+import sys
+import string
+
+pids = {}
+
+def process_data(fh):
+  lines = fh.readlines()
+  possible_pid = 0
+  using_pids = 0
+  pid = 0
+  pid_count = 1
+
+  line_num = 0
+  for line in lines:
+
+    line = line.strip()
+    line_num += 1
+    fields = line.split()
+
+    if len(fields) > 0:
+        result = re.match("(\d{4,8})", fields[0])
+        if result.group(1):
+            pid = result.group(1)
+            if pid in pids:
+                line = re.sub("^(\d+)", pids[pid], line)
+            else:
+                pid_name = "PID%d" % pid_count
+                line = re.sub("^(\d+)", pid_name, line)
+                pids[pid] = pid_name
+                pid_count += 1
+
+    # handle addresses (up to 64-bit)
+    line = re.sub("0x0{1,16}", "0xNULL", line)
+    line = re.sub("0x[0-9A-Fa-f]{1,16}", "0xADDR", line)
+
+    # handle timestamps
+    line = re.sub("\d{2}:\d{2}:\d{2}", "HH:MM:SS", line)
+    line = re.sub("\d{4}/\d{2}/\d{2}", "YYYY/MM/DD", line)
+
+    print line
+
+
+def main():
+  try:
+    script = sys.argv[0]
+    file1  = sys.argv[1]
+  except:
+    sys.exit("ERROR: usage: %s <file1> " % script)
+
+  try:
+    fh1 = open(file1)
+  except:
+    sys.exit("ERROR: unable to open file '%s'" % file1)
+
+  process_data(fh1)
+
+if __name__ == "__main__":
+  main()

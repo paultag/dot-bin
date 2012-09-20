@@ -1,0 +1,5 @@
+#!/bin/bash
+
+FILE=$(tmpstrace $@)
+strace_summarize ${FILE}
+rm -rf ${FILE}

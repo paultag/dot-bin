@@ -1,0 +1,6 @@
+#!/bin/bash
+# Copyright (c) Paul Tagliamonte, 2012
+
+TEMP=$(mktemp)
+strace -o ${TEMP} -fFv $@ > /dev/null
+echo ${TEMP}

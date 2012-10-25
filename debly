@@ -1,0 +1,11 @@
+#!/bin/bash
+
+TAG=$(ssh alioth.d.o ~bzed/godebian-client/add_url $@)
+RET=$?
+
+if [ $RET -ne 0 ]; then
+    echo "Failure?"
+    exit 1
+fi
+
+echo "http://deb.li/$TAG"

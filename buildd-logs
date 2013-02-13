@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 DEBIAN_UID="paultag"
 BUILDD_HOST="buildd.d.o"
@@ -15,7 +16,7 @@ ROOT=${PCHAR}/${PACKAGE}
 mkdir -p ${ROOT}
 
 rsync -vr \
-  ${DEBIAN_UID}@${BUILDD_HOST}:/srv/buildd.debian.org/db/${ROOT} \
+  ${DEBIAN_UID}@${BUILDD_HOST}:/srv/buildd.debian.org/db/${ROOT}/ \
   ${ROOT}
 
 for x in `find . -name "*bz2"`; do

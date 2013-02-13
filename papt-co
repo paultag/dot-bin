@@ -1,0 +1,6 @@
+#!/bin/bash
+
+export ALIOTH_USER="paultag"
+export PACKAGE_NAME="$1"
+
+svn co svn+ssh://${ALIOTH_USER}@svn.debian.org/svn/python-apps/packages/${PACKAGE_NAME}/trunk ${PACKAGE_NAME}

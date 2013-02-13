@@ -1,0 +1,28 @@
+#!/bin/bash
+
+DEBIAN_UID="paultag"
+BUILDD_HOST="buildd.d.o"
+PACKAGE=$1
+
+if [ "x${PACKAGE}" = "x" ]; then
+    echo "Need a package name"
+    exit 1
+fi
+
+PCHAR=${PACKAGE:0:1}
+ROOT=${PCHAR}/${PACKAGE}
+
+mkdir -p ${ROOT}
+
+rsync -vr \
+  ${DEBIAN_UID}@${BUILDD_HOST}:/srv/buildd.debian.org/db/${ROOT} \
+  ${ROOT}
+
+for x in `find . -name "*bz2"`; do
+    if [ ! -e ${x:0:-4} ]; then
+        echo "Unzipping $x"
+        bunzip2 -k $x
+    else
+        echo "Already unzipped $x"
+    fi
+done

@@ -1,0 +1,29 @@
+#!/usr/bin/bpython -i
+
+from sunlight import *
+import json
+import sys
+
+
+if '--local' in sys.argv:
+    import sunlight.services.openstates
+    sunlight.services.openstates.service_url = 'http://localhost:8000/api/v1'
+
+
+def j(obj):
+    print json.dumps(obj, sort_keys=True, indent=4)
+
+
+print """
+ ____  _   _ _   _ ____  _   _ _____ _     _
+/ ___|| | | | \ | / ___|| | | | ____| |   | |
+\___ \| | | |  \| \___ \| |_| |  _| | |   | |
+ ___) | |_| | |\  |___) |  _  | |___| |___| |___
+|____/ \___/|_| \_|____/|_| |_|_____|_____|_____|
+
+  Try:
+  >>> "{first_name} {last_name}".format(**openstates.legislator_detail('TNL000121'))
+
+  (brotip: use j(obj) to print JSON nicely)
+     ( j(_) is nice too, check that out)
+"""

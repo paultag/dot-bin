@@ -1,0 +1,43 @@
+#!/usr/bin/env python
+
+import urllib2
+from lxml import html
+import sys
+
+try:
+    from sh import dget
+except ImportError:
+    from pbs import dget
+
+
+URL = "http://mentors.debian.net/packages/uploader/%s"
+
+
+def lxmlize(url):
+    f = urllib2.urlopen(url)
+    page = html.fromstring(f.read())
+    page.make_links_absolute(url)
+    return page
+
+
+def scrape_package(url):
+    print url
+    page = lxmlize(url)
+    dscs = page.xpath("//a[contains(@href, '.dsc')]")
+    dsc = dscs[0].attrib['href']
+    print dsc
+    print "Dgetting ..."
+    dget("-ux", dsc)
+    print "Dgot."
+
+
+def scrape_person(who):
+    url = URL % who
+    page = lxmlize(url)
+    print url
+    for a in page.xpath("//a[contains(@href, '/package/')]"):
+        scrape_package(a.attrib['href'])
+
+
+
+scrape_person(sys.argv[1])

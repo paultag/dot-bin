@@ -2,7 +2,7 @@
 
 irc-uplink &
 PID=$!
-ssh -p 443 irc@anized.org
+ssh -p 443 irc@pault.ag
 
 pkill -P $PID
 kill $PID

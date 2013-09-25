@@ -4,8 +4,10 @@ git branch >/dev/null 2>&1
 RET=$?
 
 if [ $RET -eq 0 ]; then
+    echo -n "⎇  "
 	git branch --color=never | grep \* | sed s/^*\ //
 else
+    echo -n "⌚ "
 	date "+%I:%M %p"
     # bigloads | spark
 fi

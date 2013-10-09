@@ -7,6 +7,7 @@ mons = {}
 
 for mon in output:
     if len(mon) > 0:
+        mon = [x for x in mon if x != 'primary']
         if mon[1] == "connected":
             res=mon[2]
             res=res.split("x")

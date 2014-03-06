@@ -2,12 +2,27 @@
 
 git branch >/dev/null 2>&1
 RET=$?
+STATUS=$(cat /sys/class/power_supply/BAT0/status)
 
 if [ $RET -eq 0 ]; then
     echo -n "⎇  "
 	git branch --color=never | grep \* | sed s/^*\ //
 else
-    echo -n "⌚ "
-	date "+%I:%M %p"
-    # bigloads | spark
+    case $STATUS in
+        Full)
+            echo -n "⌚ "
+            date "+%I:%M %p"
+            ;;
+        Discharging)
+            bheart
+            ;;
+        Charging)
+            bheart
+            ;;
+        *)
+            echo -n "⌚ "
+            date "+%I:%M %p"
+            ;;
+    esac
+
 fi

@@ -1,2 +1,2 @@
 #!/bin/bash
-ssh -p 443 irc@pault.ag "tail -n 1 -f ~/.irssi/fnotify" | notifyd
+ssh irc@pault.ag "tail -n 1 -f ~/.irssi/fnotify" | notifyd

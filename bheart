@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+import sys
+
+HEARTS = 4
+
+def vread(end):
+    def vread_f(what):
+        return float(
+            open("/sys/class/power_supply/%s/%s" % (end, what), 'r').read()
+        )
+
+    maxv = vread_f('charge_full')
+    curv = vread_f('charge_now')
+
+    return curv / maxv
+
+
+def draw_hearts(count):
+    FULL = int(count * HEARTS)
+    EMPTY = HEARTS - FULL
+
+    sys.stdout.write("[31m")
+    for _ in range(0, FULL):
+        sys.stdout.write("♥ ")
+    sys.stdout.write("[1m")
+    for _ in range(0, EMPTY):
+        sys.stdout.write("♡ ")
+    sys.stdout.write("[0m")
+
+draw_hearts(vread("BAT0"))

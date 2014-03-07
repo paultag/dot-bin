@@ -8,21 +8,25 @@ if [ $RET -eq 0 ]; then
     echo -n "⎇  "
 	git branch --color=never | grep \* | sed s/^*\ //
 else
-    case $STATUS in
-        Full)
-            echo -n "⌚ "
-            date "+%I:%M %p"
-            ;;
-        Discharging)
-            bheart
-            ;;
-        Charging)
-            bheart
-            ;;
-        *)
-            echo -n "⌚ "
-            date "+%I:%M %p"
-            ;;
-    esac
+    #case $STATUS in
+    #    Full)
+    echo -n "⌚ "
+    date "+%I:%M %p"
+    #        ;;
+    #    Discharging)
+    #        echo -e -n "\e[31;1m"
+    #        echo -n $(bheart)
+    #        echo -e -n "\e[0m "
+    #        ;;
+    #    Charging)
+    #        echo -e -n "\e[31;1m"
+    #        echo -n $(bheart)
+    #        echo -e -n "\e[0m "
+    #        ;;
+    #    *)
+    #        echo -n "⌚ "
+    #        date "+%I:%M %p"
+    #        ;;
+    #esac
 
 fi

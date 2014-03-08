@@ -9,8 +9,10 @@ def vread(end):
             open("/sys/class/power_supply/%s/%s" % (end, what), 'r').read()
         )
 
-    maxv = vread_f('charge_full')
-    curv = vread_f('charge_now')
+    # maxv = vread_f('charge_full')
+    # curv = vread_f('charge_now')
+    maxv = vread_f('energy_full')
+    curv = vread_f('energy_now')
 
     return curv / maxv
 

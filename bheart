@@ -18,7 +18,7 @@ def vread(end):
 
 
 def draw_hearts(count):
-    FULL = int(count * HEARTS)
+    FULL = round(count * HEARTS)
     EMPTY = HEARTS - FULL
 
     #sys.stdout.write("[31m")

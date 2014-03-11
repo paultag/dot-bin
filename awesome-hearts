@@ -1,4 +1,4 @@
 #!/bin/bash
 
 
-echo "hearts.text = '<span color=\"red\">$(~/.bin/bheart)</span>'" | awesome-client
+echo "hearts.text = '<span color=\"red\"> $(~/.bin/bheart)</span>'" | awesome-client

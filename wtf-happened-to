@@ -1,0 +1,67 @@
+#!/bin/bash
+
+FTP_MASTER_HOST="ftp-master.debian.org"
+PACKAGE=$1
+FOUND="no"
+
+if [ "x${PACKAGE}" = "x" ]; then
+    echo "No package given"
+    exit 1
+fi
+
+function remote {
+    ssh ${FTP_MASTER_HOST} $@
+}
+
+QUEUED=$(remote grep ${PACKAGE} /srv/upload.debian.org/queued/log 2>/dev/null)
+
+if [ ! "x${QUEUED}" = "x" ]; then
+    echo "  => Record in queued"
+    echo "${QUEUED}"
+    FOUND="yes"
+else
+    echo "  => No record in queued"
+fi
+
+echo ""
+echo ""
+echo ""
+
+UNCHECKED=$(remote ls /srv/ftp-master.debian.org/queue/unchecked/${PACKAGE}*changes 2>/dev/null)
+
+if [ "x${UNCHECKED}" = "x" ]; then
+    echo "  => Not in unchecked"
+else
+    echo "  => changes in unchecked"
+    echo "${UNCHECKED}"
+    FOUND="yes"
+fi
+
+echo ""
+echo ""
+echo ""
+
+COMMENTS=$(remote ls /srv/ftp-master.debian.org/queue/new/COMMENTS/*.${PACKAGE}* 2>/dev/null)
+
+if [ "x${COMMENTS}" = "x" ]; then
+    echo "  => Not in COMMENTS"
+else
+    echo "  => note in COMMENTS"
+    echo ""
+    echo " Looking at: ${COMMENTS}"
+    echo ""
+    remote cat ${COMMENTS}
+    FOUND="yes"
+fi
+
+
+if [ "x${FOUND}" = "xno" ]; then
+    echo ""
+    echo ""
+    echo ""
+    echo "I have no fucking idea. Here's a dak ls."
+    echo ""
+    echo ""
+    remote dak ls ${PACKAGE}
+fi
+

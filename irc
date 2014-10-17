@@ -1,8 +1,8 @@
 #!/bin/bash
 
-irc-uplink &
-PID=$!
-ssh irc@pault.ag
-
-pkill -P $PID
-kill $PID
+# irc-uplink &
+# PID=$!
+ssh tag@z.ero.cool -t tmux attach -t irc
+# 
+# pkill -P $PID
+# kill $PID

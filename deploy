@@ -1,0 +1,12 @@
+#!/bin/bash
+
+PLAY=$1
+
+if [ "x${PLAY}" = "x" ]; then
+    echo "Need a site to deploy."
+    exit 1
+fi
+
+source ~/dev/local/ansible/hacking/env-setup
+cd ~/dev/local/deployment
+ansible-playbook -i hosts ${PLAY}.yml

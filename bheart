@@ -40,7 +40,7 @@ def status(status):
 
 if '--html' in sys.argv:
     print(('<span color="red">%s</span>'
-          + '<span color="yellow">%s</span>')
+          + '<span color="yellow">%s </span>')
           % (hearts(vread("BAT0")), status(sread("BAT0"))))
 else:
     print(hearts(vread("BAT0")) + status(sread("BAT0")))

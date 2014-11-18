@@ -2,6 +2,7 @@
 import sys
 
 HEARTS = 10
+STATUS_SYM = { 'Charging': '🗲' }
 
 def vread(end):
     def vread_f(what):
@@ -18,19 +19,28 @@ def vread(end):
 
     return curv / maxv
 
+def sread(end):
+    return open("/sys/class/power_supply/%s/status" % (end,)).read().strip()
 
-def draw_hearts(count):
+def hearts(count):
     FULL = round(count * HEARTS)
     EMPTY = HEARTS - FULL
 
-    #sys.stdout.write("[31m")
+    hearts=''
     for _ in range(0, FULL):
-        sys.stdout.write("♥ ")
-    #sys.stdout.write("[1m")
+        hearts += "♥ "
     for _ in range(0, EMPTY):
-        sys.stdout.write("♡ ")
-    #sys.stdout.write("[0m")
-    print()
+        hearts += "♡ "
 
+    return hearts
 
-draw_hearts(vread("BAT0"))
+def status(status):
+    if status in STATUS_SYM:
+        return STATUS_SYM[status]
+
+if '--html' in sys.argv:
+    print(('<span color="red">%s</span>'
+          + '<span color="yellow">%s</span>')
+          % (hearts(vread("BAT0")), status(sread("BAT0"))))
+else:
+    print(hearts(vread("BAT0")) + status(sread("BAT0")))

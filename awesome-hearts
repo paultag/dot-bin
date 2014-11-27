@@ -1,4 +1,4 @@
 #!/bin/bash
 
 
-echo "hearts.text = '$(~/bin/bheart --html)'" | awesome-client
+echo "hearts.text = '$(~/.bin/bheart --html)'" | awesome-client

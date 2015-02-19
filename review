@@ -1,0 +1,3 @@
+#!/bin/bash
+. ~/.virtualenvs/revu/bin/activate
+revu $@

@@ -1,2 +1,2 @@
 #!/bin/bash
-ssh tag@z.ero.cool "tail -n 1 -f /srv/docker/irssi/.irssi/fnotify" | notifyd
+ssh tag@z.ero.cool "tail -n 1 -f ~/.irssi/fnotify" | notifyd

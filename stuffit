@@ -1,0 +1,51 @@
+#!/bin/bash
+# Copyright (c) Stefano Zacchiroli, 2015, GPLv3+
+#               Modified very slightly by Paul Tagliamonte, 2015
+
+HOST="pault.ag"
+HOST_DEST="/home/tag/public_html/stuff"
+HOST_BASEURL="https://pault.ag/stuff"
+EXPIRE_TIME="now + 12 hours"
+
+target=""
+expire_time="now + 12 hours"    # must be compatible with at(1) timespec
+
+die_usage () {
+    echo "Usage: stuffit FILE [-n NAME] [-e TIMESPEC]"
+    echo "       stuffit -h"
+    echo
+    echo "TIMESPEC should be in a format compatible with at(1) timespec"
+    echo "You can use \"never\" as TIMESPEC, to avoid expiring alltogether"
+    exit 0
+}
+
+test -z "$1" && die_usage
+args=$(getopt -o e:n:h -- "$@")
+eval set -- "$args"
+while [ ! -z "$1" ] ; do
+    case "$1" in
+    -e) expire_time="$2"; shift 2 ;;
+    -n) target="$2"; shift 2 ;;
+    -h) die_usage ;;
+    --) shift ; break;;
+    esac
+done
+
+if [ -z "$target" ] ; then
+    target=$(basename "$1")
+fi
+
+scp "$1" "${HOST}:${HOST_DEST}/${target}"
+ssh $HOST chmod a+r "stuff/$target"
+
+if [ "$expire_time" != "never" ] ; then
+    ssh $HOST "echo 'rm -f ${HOST_DEST}/${target}' | at ${expire_time}"
+fi
+
+url="${HOST_BASEURL}/${target}"
+if curl -s -I "$url" | head -n 1 | grep -q 200 ; then
+    echo $url
+else
+    echo "can't find $url ..."
+    exit 2
+fi

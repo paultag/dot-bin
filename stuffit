@@ -36,7 +36,7 @@ if [ -z "$target" ] ; then
 fi
 
 scp "$1" "${HOST}:${HOST_DEST}/${target}"
-ssh $HOST chmod a+r "stuff/$target"
+ssh $HOST chmod a+r "public_html/stuff/$target"
 
 if [ "$expire_time" != "never" ] ; then
     ssh $HOST "echo 'rm -f ${HOST_DEST}/${target}' | at ${expire_time}"

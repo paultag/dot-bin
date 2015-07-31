@@ -1,0 +1,24 @@
+#!/bin/bash
+set -e
+
+PKG=$1
+
+if [ "x${PKG}" = "x" ]; then
+    echo "Need a go import path"
+    exit 1
+fi
+
+WORKDIR=$(mktemp -d)
+POPDIR=$(pwd)
+
+echo "Working in ${WORKDIR}"
+
+export GOPATH=${WORKDIR}
+go get -d -t $PKG/...
+cd ${WORKDIR}/src/${PKG}
+
+TARGZ=$(git-export HEAD)
+mv ${TARGZ} ${POPDIR}
+echo "Giving you ${TARGZ} in ${POPDIR}"
+cd ${POPDIR}
+rm -rf ${WORKDIR}

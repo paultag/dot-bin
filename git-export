@@ -12,4 +12,4 @@ PROJECT=$(basename $(pwd))
 WHERETO="../${PROJECT}_${REVNO}.orig.tar.gz"
 
 git archive ${TREEISH} --format=tar.gz > ${WHERETO}
-echo "Written to ${WHERETO}"
+echo "${WHERETO}"

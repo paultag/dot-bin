@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+TREEISH=$1
+
+if [ "x${1}" = "x" ]; then
+    echo "Give me a treeish!"
+    exit 1
+fi
+
+REVNO=$(git describe ${TREEISH} | tr '-' '+')
+PROJECT=$(basename $(pwd))
+WHERETO="../${PROJECT}_${REVNO}.orig.tar.gz"
+
+git archive ${TREEISH} --format=tar.gz > ${WHERETO}
+echo "Written to ${WHERETO}"

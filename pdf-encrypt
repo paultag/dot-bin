@@ -1,0 +1,23 @@
+#!/bin/sh
+set -e
+
+password() {
+    cat /usr/share/dict/words | grep -v "'" | shuf | head -n 3 \
+        | tr '\n' '-' | sed 's/-$//g' && echo
+}
+
+PASSWORD=$(password)
+pdf="$1"
+
+if [ "x${pdf}" = "x" ]; then
+    echo "Need a pdf"
+    exit 1
+fi
+
+
+echo "Document encrypted with: ${PASSWORD}"
+echo ""
+
+pdftk \
+    "${pdf}" output "encrypted-${pdf}" \
+    user_pw ${PASSWORD}

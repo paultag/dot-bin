@@ -1,0 +1,20 @@
+#!/bin/sh
+set -e
+
+KEY=$1
+SERIAL=$2
+
+if [ "x${SERIAL}" = "x" ]; then
+    echo "Usage: ca-sign-crl /some/path/to/crl.crl serial-number"
+    exit 1
+fi
+
+openssl x509 \
+    -req \
+    -CA ~/CA/ca.crt \
+    -CAkey ~/CA/ca.key \
+    -out ${KEY}.crt \
+    -in ${KEY} \
+    -set_serial ${SERIAL}
+
+openssl x509 -in ${KEY}.crt -noout -text

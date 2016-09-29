@@ -53,7 +53,7 @@
    concurently running as many jobs as the pool will allow. Currently
    this is harcoded at 10, but that may change in the future."
   (let [[task (partial run/target command)]]
-    (with [[executor (ThreadPoolExecutor 50)]]
+    (with [[executor (ThreadPoolExecutor 10)]]
       (yield-from (executor.map task targets)))))
 
 
